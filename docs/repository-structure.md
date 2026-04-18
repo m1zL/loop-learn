@@ -278,7 +278,7 @@ tests/
 |---------|------|
 | `next.config.ts` | Next.js設定 (Mermaid等のCSP設定含む) |
 | `prisma/schema.prisma` | DBスキーマ |
-| `tailwind.config.ts` | Tailwind設定 |
+| `postcss.config.mjs` | PostCSS設定 (Tailwind CSS v4 の `@tailwindcss/postcss` プラグインを登録) |
 | `tsconfig.json` | TypeScript設定 |
 | `vitest.config.ts` | Vitest設定 |
 | `playwright.config.ts` | Playwright設定 |
