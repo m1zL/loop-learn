@@ -206,8 +206,7 @@ erDiagram
         int expires_at
     }
     SESSION {
-        string id PK
-        string sessionToken UK
+        string sessionToken PK
         string userId FK
         datetime expires
     }
@@ -752,7 +751,7 @@ stateDiagram-v2
 ```
 
 **エラー**:
-- 400: 必須フィールド不足 / front文字数超過(2000字) / タグ数超過(10個)
+- 400: 必須フィールド不足 / front文字数超過(2000字) / タグ数超過(10個) / タグ長超過(50文字)
 - 401: 未認証
 - 404: deckIdが存在しない、または他ユーザーのデッキ
 
