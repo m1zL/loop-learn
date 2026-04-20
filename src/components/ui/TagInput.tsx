@@ -6,14 +6,15 @@ interface TagInputProps {
   value: string[];
   onChange: (tags: string[]) => void;
   maxTags?: number;
+  maxTagLength?: number;
 }
 
-export default function TagInput({ value, onChange, maxTags = 10 }: TagInputProps) {
+export default function TagInput({ value, onChange, maxTags = 10, maxTagLength = 50 }: TagInputProps) {
   const [inputValue, setInputValue] = useState('');
 
   const addTag = (tag: string) => {
     const trimmed = tag.trim();
-    if (!trimmed || value.includes(trimmed) || value.length >= maxTags) return;
+    if (!trimmed || value.includes(trimmed) || value.length >= maxTags || trimmed.length > maxTagLength) return;
     onChange([...value, trimmed]);
     setInputValue('');
   };

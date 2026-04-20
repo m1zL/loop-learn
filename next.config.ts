@@ -9,13 +9,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Mermaidはクライアントサイド専用のため、サーバーサイドでのインポートを防ぐ
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      config.externals = [...(config.externals || []), 'mermaid'];
-    }
-    return config;
-  },
+  // Mermaidはクライアントサイド専用のため、サーバーサイドでのバンドルから除外する
+  serverExternalPackages: ['mermaid'],
 };
 
 export default nextConfig;
