@@ -576,16 +576,16 @@ echo 'npx lint-staged && npm run typecheck' > .husky/pre-commit
 
 ### vitest パスエイリアス
 
-`vite-tsconfig-paths` はESM onlyのため `vitest.config.ts`（CJSでロード）での利用は不可。代わりに `resolve.alias` を直接定義する:
+`vite-tsconfig-paths` はESM onlyのため `vitest.config.ts` との組み合わせで問題が起きる場合がある。代わりに `resolve.alias` を直接定義する。`vitest.config.ts` はESMとして処理されるため、`__dirname` の代わりに `import.meta.url` を使用する:
 
 ```typescript
 // vitest.config.ts
-import path from 'path';
+import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
   // ...
