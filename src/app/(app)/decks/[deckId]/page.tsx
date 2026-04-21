@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { getDeckById } from '@/lib/services/deck';
 import { getCardsByDeck } from '@/lib/services/card';
+import CardActions from '@/components/cards/CardActions';
 
 export default async function DeckDetailPage({
   params,
@@ -93,10 +94,13 @@ export default async function DeckDetailPage({
           {cards.map((card) => (
             <li
               key={card.id}
-              className="bg-white border border-gray-200 rounded-lg p-4"
+              className="bg-white border border-gray-200 rounded-lg p-4 flex items-start justify-between gap-3"
             >
-              <p className="text-sm font-medium text-gray-800 line-clamp-2">{card.front}</p>
-              <p className="text-sm text-gray-500 mt-1 line-clamp-1">{card.back}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-800 line-clamp-2">{card.front}</p>
+                <p className="text-sm text-gray-500 mt-1 line-clamp-1">{card.back}</p>
+              </div>
+              <CardActions cardId={card.id} />
             </li>
           ))}
         </ul>

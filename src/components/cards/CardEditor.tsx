@@ -6,7 +6,7 @@ import CardPreview from './CardPreview';
 import TagInput from '@/components/ui/TagInput';
 import type { CardType } from '@/types/card';
 import type { Deck } from '@/types/deck';
-import type { CreateCardInput } from '@/lib/validations/card.schema';
+import type { CreateCardInput, UpdateCardInput } from '@/lib/validations/card.schema';
 
 const CARD_TYPE_LABELS: Record<CardType, string> = {
   qa: 'Q&A形式',
@@ -37,15 +37,18 @@ const CARD_TYPE_HINTS: Record<CardType, { front: string; back: string }> = {
 interface CardEditorProps {
   decks: Deck[];
   defaultDeckId?: string;
+  mode?: 'create' | 'edit';
+  cardId?: string;
+  defaultValues?: Partial<CreateCardInput>;
 }
 
-export default function CardEditor({ decks, defaultDeckId }: CardEditorProps) {
+export default function CardEditor({ decks, defaultDeckId, mode = 'create', cardId, defaultValues }: CardEditorProps) {
   const router = useRouter();
-  const [cardType, setCardType] = useState<CardType>('qa');
-  const [front, setFront] = useState('');
-  const [back, setBack] = useState('');
-  const [tags, setTags] = useState<string[]>([]);
-  const [deckId, setDeckId] = useState(defaultDeckId ?? decks[0]?.id ?? '');
+  const [cardType, setCardType] = useState<CardType>(defaultValues?.cardType ?? 'qa');
+  const [front, setFront] = useState(defaultValues?.front ?? '');
+  const [back, setBack] = useState(defaultValues?.back ?? '');
+  const [tags, setTags] = useState<string[]>(defaultValues?.tags ?? []);
+  const [deckId, setDeckId] = useState(defaultValues?.deckId ?? defaultDeckId ?? decks[0]?.id ?? '');
   const [activeTab, setActiveTab] = useState<'edit' | 'preview'>('edit');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -71,27 +74,36 @@ export default function CardEditor({ decks, defaultDeckId }: CardEditorProps) {
     setIsSubmitting(true);
     setError(null);
 
-    const payload: CreateCardInput = { deckId, cardType, front, back, tags };
-
     try {
-      const res = await fetch('/api/cards', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      let res: Response;
+      if (mode === 'edit' && cardId) {
+        const payload: UpdateCardInput = { cardType, front, back, tags };
+        res = await fetch(`/api/cards/${cardId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        const payload: CreateCardInput = { deckId, cardType, front, back, tags };
+        res = await fetch('/api/cards', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      }
 
       if (!res.ok) {
         const data = (await res.json()) as { error?: string | { message?: string } };
         const message =
           typeof data.error === 'string'
             ? data.error
-            : (data.error?.message ?? 'カードの作成に失敗しました');
+            : (data.error?.message ?? 'カードの保存に失敗しました');
         throw new Error(message);
       }
 
       router.push(`/decks/${deckId}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'カードの作成に失敗しました');
+      setError(err instanceof Error ? err.message : 'カードの保存に失敗しました');
     } finally {
       setIsSubmitting(false);
     }
@@ -140,7 +152,8 @@ export default function CardEditor({ decks, defaultDeckId }: CardEditorProps) {
             id="deckId"
             value={deckId}
             onChange={(e) => setDeckId(e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled={mode === 'edit'}
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {decks.map((deck) => (
               <option key={deck.id} value={deck.id}>
@@ -268,7 +281,7 @@ export default function CardEditor({ decks, defaultDeckId }: CardEditorProps) {
           disabled={!isValid || isSubmitting}
           className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isSubmitting ? '作成中...' : 'カードを作成'}
+          {isSubmitting ? '保存中...' : mode === 'edit' ? 'カードを保存' : 'カードを作成'}
         </button>
       </div>
     </form>
