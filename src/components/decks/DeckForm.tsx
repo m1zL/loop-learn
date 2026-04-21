@@ -37,7 +37,12 @@ export default function DeckForm({ mode, deckId, defaultValues }: DeckFormProps)
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim(), description: description.trim() || undefined, icon }),
+        // 編集時は null を明示送信することで既存説明を消せるようにする
+        body: JSON.stringify({
+          name: name.trim(),
+          description: mode === 'edit' ? (description.trim() || null) : (description.trim() || undefined),
+          icon,
+        }),
       });
 
       if (!res.ok) {
@@ -67,6 +72,8 @@ export default function DeckForm({ mode, deckId, defaultValues }: DeckFormProps)
             <button
               key={emoji}
               type="button"
+              aria-label={`アイコン ${emoji}`}
+              aria-pressed={icon === emoji}
               onClick={() => setIcon(emoji)}
               className={`text-2xl p-2 rounded-lg border-2 transition-colors ${
                 icon === emoji

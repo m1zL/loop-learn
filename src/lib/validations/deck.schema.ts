@@ -8,5 +8,8 @@ export const createDeckSchema = z.object({
 
 export type CreateDeckInput = z.infer<typeof createDeckSchema>;
 
-export const updateDeckSchema = createDeckSchema.partial();
+// description は null を許容: 編集時に空にして既存説明を消す操作を可能にする
+export const updateDeckSchema = createDeckSchema.partial().extend({
+  description: z.string().max(500, '説明は500文字以内にしてください').nullish(),
+});
 export type UpdateDeckInput = z.infer<typeof updateDeckSchema>;
