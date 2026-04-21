@@ -464,35 +464,38 @@ on:
   push:
     branches: [main, develop]
   pull_request:
-    branches: [develop]
+    branches: [main, develop]
+
+permissions:
+  contents: read
 
 jobs:
-  quality:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '22.x'
           cache: 'npm'
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
-      - run: npm run test:coverage
+      - run: npm test
       - run: npm run build
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-      - name: Run E2E tests
-        run: npm run test:e2e
         env:
-          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.TEST_DIRECT_URL }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
+          DIRECT_URL: postgresql://dummy:dummy@localhost:5432/dummy
+          NEXTAUTH_SECRET: ci-dummy-secret-32-chars-minimum!!
           NEXTAUTH_URL: http://localhost:3000
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          # GEMINI_API_KEYは本番APIを呼ばないようE2EテストではAIエンドポイントをモック
+          GOOGLE_CLIENT_ID: dummy-client-id
+          GOOGLE_CLIENT_SECRET: dummy-client-secret
 ```
+
+**今後追加予定（E2E テスト）**:
+
+E2E テスト (Playwright) は DB 接続が必要なため、別途ワークフローとして追加する。  
+`secrets.TEST_DATABASE_URL` 等の Secrets 設定と Playwright ブラウザのインストールが必要。
 
 **GitHub Secrets の設定**:
 - `TEST_DATABASE_URL` / `TEST_DIRECT_URL`: E2E テスト専用の Supabase プロジェクト接続文字列（本番とは分離）

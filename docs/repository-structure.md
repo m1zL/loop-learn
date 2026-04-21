@@ -410,7 +410,7 @@ npx ts-node scripts/check-env.ts      # 環境変数チェック
 ```
 .github/
 └── workflows/
-    └── ci.yml                        # メインCIワークフロー (lint / typecheck / test / build / E2E)
+    └── ci.yml                        # メインCIワークフロー (lint / typecheck / test / build)
 ```
 
 詳細な `ci.yml` の内容は [開発ガイドライン - CI/CD](./development-guidelines.md#cicd) を参照。
