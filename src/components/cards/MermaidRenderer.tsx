@@ -7,6 +7,11 @@ interface MermaidRendererProps {
   code: string;
 }
 
+/**
+ * Mermaidダイアグラムをクライアントサイドでレンダリングするコンポーネント。
+ * `mermaid.render()` で SVG を生成し `dangerouslySetInnerHTML` で挿入する。
+ * エラー時は赤文字のメッセージを表示し、ローディング中はグレーのプレースホルダーを表示する。
+ */
 export default function MermaidRenderer({ code }: MermaidRendererProps) {
   const rawId = useId();
   // useId() returns strings like ":r0:" — colons are invalid in HTML IDs
