@@ -1,6 +1,6 @@
 # 開発ロードマップ
 
-> 最終更新: 2026-04-22 (M3進行中: SM-2サービス・復習API完了)
+> 最終更新: 2026-04-23 (M3進行中: SM-2サービス・復習API完了)
 > ベースドキュメント: docs/product-requirements.md, docs/architecture.md, docs/functional-design.md
 
 ---
