@@ -1,9 +1,16 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeSanitize from 'rehype-sanitize';
 import type { CardType } from '@/types/card';
+
+// Mermaid はバンドルサイズが大きいため next/dynamic で遅延ロード（SSR無効化）
+const MermaidRenderer = dynamic(() => import('./MermaidRenderer'), {
+  ssr: false,
+  loading: () => <p className="text-xs text-gray-400 p-2">ダイアグラムを読み込み中...</p>,
+});
 
 interface CardPreviewProps {
   content: string;
@@ -36,6 +43,15 @@ export default function CardPreview({ content, cardType, isFront = false }: Card
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeSanitize]}
+        components={{
+          code({ className, children }) {
+            const match = /language-(\w+)/.exec(className ?? '');
+            if (match?.[1] === 'mermaid') {
+              return <MermaidRenderer code={String(children).trim()} />;
+            }
+            return <code className={className}>{children}</code>;
+          },
+        }}
       >
         {displayContent}
       </ReactMarkdown>
