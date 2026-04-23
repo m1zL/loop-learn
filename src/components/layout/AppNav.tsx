@@ -19,6 +19,12 @@ export default function AppNav({ session }: AppNavProps) {
 
         <nav className="flex items-center gap-3">
           <Link
+            href="/dashboard"
+            className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            ダッシュボード
+          </Link>
+          <Link
             href="/decks"
             className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
           >
