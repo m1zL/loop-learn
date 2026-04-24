@@ -18,7 +18,7 @@ vi.mock('@/lib/prisma', () => ({
   },
 }));
 
-import { createCard, updateCard, deleteCard } from '@/lib/services/card';
+import { createCard, updateCard, deleteCard, getTodayReviewCards } from '@/lib/services/card';
 import { prisma } from '@/lib/prisma';
 import type { CreateCardInput } from '@/lib/validations/card.schema';
 
@@ -263,5 +263,72 @@ describe('deleteCard', () => {
     const result = await deleteCard(VALID_USER_ID, CARD_ID);
 
     expect(result).toBe(false);
+  });
+});
+
+describe('getTodayReviewCards', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  yesterday.setHours(0, 0, 0, 0);
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+
+  const overdueCard = { ...baseCard, id: 'overdue-1', nextReviewDate: yesterday };
+  const dueCard = { ...baseCard, id: 'due-today', nextReviewDate: today };
+
+  it('今日以前の nextReviewDate を持つカードを返す', async () => {
+    vi.mocked(prisma.card.findMany).mockResolvedValue([overdueCard, dueCard]);
+
+    const result = await getTodayReviewCards(VALID_USER_ID);
+
+    expect(prisma.card.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          userId: VALID_USER_ID,
+          nextReviewDate: { lte: expect.any(Date) },
+        }),
+        orderBy: { nextReviewDate: 'asc' },
+      }),
+    );
+    expect(result).toHaveLength(2);
+  });
+
+  it('deckId 指定時はそのデッキのカードのみ取得する', async () => {
+    vi.mocked(prisma.card.findMany).mockResolvedValue([dueCard]);
+
+    await getTodayReviewCards(VALID_USER_ID, VALID_DECK_ID);
+
+    expect(prisma.card.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          userId: VALID_USER_ID,
+          deckId: VALID_DECK_ID,
+        }),
+      }),
+    );
+  });
+
+  it('deckId 未指定時は where に deckId が含まれない', async () => {
+    vi.mocked(prisma.card.findMany).mockResolvedValue([]);
+
+    await getTodayReviewCards(VALID_USER_ID);
+
+    const callArgs = vi.mocked(prisma.card.findMany).mock.calls[0]?.[0];
+    expect(callArgs?.where).not.toHaveProperty('deckId');
+  });
+
+  it('カードが0件のとき空配列を返す', async () => {
+    vi.mocked(prisma.card.findMany).mockResolvedValue([]);
+
+    const result = await getTodayReviewCards(VALID_USER_ID);
+
+    expect(result).toEqual([]);
   });
 });

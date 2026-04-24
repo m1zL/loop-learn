@@ -29,14 +29,16 @@ export default async function DashboardPage() {
         </p>
         <p className="text-sm text-gray-400">総カード数: {totalCards}枚</p>
 
-        <button
-          type="button"
-          disabled
-          title="復習セッションはまもなく実装予定です"
-          className="mt-4 w-full py-3 bg-blue-600 text-white font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          復習を始める（準備中）
-        </button>
+        {totalDueCards > 0 ? (
+          <Link
+            href="/review"
+            className="mt-4 block w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors text-center"
+          >
+            復習を始める
+          </Link>
+        ) : (
+          <p className="mt-4 text-sm text-center text-gray-400">今日の復習はありません</p>
+        )}
       </div>
 
       {/* クイックリンク */}

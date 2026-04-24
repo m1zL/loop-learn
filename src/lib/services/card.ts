@@ -61,3 +61,27 @@ export async function deleteCard(userId: string, cardId: string): Promise<boolea
   });
   return result.count > 0;
 }
+
+/**
+ * 今日の復習対象カードを取得する。
+ * nextReviewDate が今日0時以前のカードを期限切れ優先（ASC）でソートして返す。
+ *
+ * @param userId - ユーザーID
+ * @param deckId - デッキIDで絞り込む（省略時は全デッキ対象）
+ * @returns 今日の復習対象カードリスト
+ */
+export async function getTodayReviewCards(userId: string, deckId?: string): Promise<Card[]> {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const cards = await prisma.card.findMany({
+    where: {
+      userId,
+      ...(deckId ? { deckId } : {}),
+      nextReviewDate: { lte: today },
+    },
+    orderBy: { nextReviewDate: 'asc' },
+  });
+
+  return cards as Card[];
+}
