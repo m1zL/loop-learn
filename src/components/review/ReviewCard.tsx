@@ -20,7 +20,14 @@ export default function ReviewCard({ card, isFlipped, onFlip }: ReviewCardProps)
       tabIndex={0}
       onClick={onFlip}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') onFlip();
+        if (e.key === 'Enter') {
+          onFlip();
+          return;
+        }
+        if (e.key === ' ') {
+          e.preventDefault();
+          onFlip();
+        }
       }}
       className="relative cursor-pointer select-none"
       style={{ perspective: '1000px', minHeight: '200px' }}

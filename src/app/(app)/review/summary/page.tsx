@@ -11,8 +11,11 @@ export default async function ReviewSummaryPage({
   if (!session?.user?.id) notFound();
 
   const { reviewed, avgRating } = await searchParams;
-  const reviewedCount = Number(reviewed ?? 0);
-  const avgRatingValue = Number(avgRating ?? 0);
+  const parsedReviewed = Number(reviewed);
+  const parsedAvg = Number(avgRating);
+  // 不正なURL直入力(NaN・負数)への安全対策
+  const reviewedCount = Number.isFinite(parsedReviewed) ? Math.max(0, Math.trunc(parsedReviewed)) : 0;
+  const avgRatingValue = Number.isFinite(parsedAvg) ? Math.min(4, Math.max(0, parsedAvg)) : 0;
 
   return (
     <div className="text-center py-12">

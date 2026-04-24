@@ -52,6 +52,8 @@ export default function ReviewSession({ cards }: ReviewSessionProps) {
 
       setCurrentIndex(nextIndex);
       setIsFlipped(false);
+    } catch (error) {
+      console.error('評価送信中に通信エラーが発生しました:', error);
     } finally {
       setIsSubmitting(false);
     }
