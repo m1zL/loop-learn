@@ -33,7 +33,7 @@
   - [ ] リマインダー時刻設定 (例: 毎日 20:00)
   - [ ] 通知方法選択: メール通知 / Web Push 通知
 - [ ] メール通知
-  - [ ] Resend または Nodemailer による日次リマインダーメール送信
+  - [ ] Resend による日次リマインダーメール送信
   - [ ] `POST /api/notifications/remind` エンドポイント (Cron ジョブから呼び出し)
   - [ ] Vercel Cron または GitHub Actions Schedule で日次実行
 - [ ] Web Push 通知
@@ -79,8 +79,8 @@
 |------|------|------|
 | 前提マイルストーン | M5: AI問題自動生成 | `/api/ai/generate` と `GeneratedCardList` を再利用 |
 | 前提マイルストーン | M6: MVP品質完成 (推奨) | PWA の Service Worker が Web Push の基盤になる |
-| 外部サービス | Resend または SendGrid | メールリマインダー送信用。APIキーが必要 |
-| 環境変数 | `RESEND_API_KEY` または `SENDGRID_API_KEY` | メール送信サービスに応じて追加 |
+| 外部サービス | Resend | メールリマインダー送信用。APIキーが必要 |
+| 環境変数 | `RESEND_API_KEY` | Resend ダッシュボードで取得 |
 | 環境変数 | `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` | Web Push 用 VAPID キーペア |
 | 環境変数 | `CRON_SECRET` | Cron エンドポイント認証用 |
 

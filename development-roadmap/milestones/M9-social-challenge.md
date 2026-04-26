@@ -35,9 +35,10 @@
 - [ ] `CardType` に `'code-challenge'` を追加
 - [ ] `CodeChallengeEditor` コンポーネントを作成
   - [ ] Monaco Editor (または CodeMirror) を `next/dynamic` で動的インポート
-  - [ ] 言語選択 (TypeScript / JavaScript / Python / Go)
+  - [ ] 言語選択 (TypeScript / JavaScript / Python)
+    - [ ] ※ Go はブラウザ上でのサンドボックス実行が困難なため対象外 (TinyGo/WASM は別途検討)
   - [ ] 実行ボタン → フロントエンドで WebAssembly / Sandboxed eval で検証
-    - [ ] セキュリティ: `eval` は禁止。Pyodide (Python) / QuickJS (JS) を使用
+    - [ ] セキュリティ: `eval` は禁止。Pyodide (Python) / QuickJS (JS/TS) を使用
   - [ ] テストケース (入力・期待出力) を back フィールドに JSON で格納
 - [ ] カード作成 UI にコードチャレンジタブを追加
 - [ ] 復習セッションでコードチャレンジカードを適切にレンダリング
