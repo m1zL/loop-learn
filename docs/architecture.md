@@ -21,7 +21,7 @@
 | NextAuth.js | 5.x (Auth.js) | 認証 | Google OAuth・メールパスワード認証に対応。Next.js App Routerとの統合が公式サポート |
 | react-markdown | 9.x | Markdownレンダリング | rehype-sanitize と組み合わせてXSS安全なMarkdown描画が可能 |
 | mermaid | 11.x | ダイアグラム描画 | シーケンス図・ER図・フローチャートをコードから描画。動的インポートでバンドル分割可能 |
-| @google/generative-ai | 0.x | Gemini API クライアント | カード自動生成機能。無料枠あり(Gemini 2.0 Flash: 15RPM・100万トークン/日) |
+| @google/generative-ai | 0.x | Gemini API クライアント | カード自動生成機能。無料枠あり(Gemini 2.5 Flash: 15RPM・100万トークン/日) |
 | Zod | 3.x | バリデーション | TypeScriptとの親和性が高く、API入力の型安全バリデーションを実現 |
 
 ### データベース・インフラ

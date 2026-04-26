@@ -42,6 +42,12 @@ export default function AppNav({ session }: AppNavProps) {
           >
             カード作成
           </Link>
+          <Link
+            href="/ai/generate"
+            className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            AI生成
+          </Link>
 
           <div className="flex items-center gap-2 pl-3 border-l border-gray-200">
             {user.image ? (
